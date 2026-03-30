@@ -1,0 +1,12 @@
+# Build artifacts
+build/
+bin/
+obj/
+*.exe
+*.out
+*.o
+
+# IDE folders
+.vscode/
+.idea/
+.vs/
