@@ -12,15 +12,20 @@
 
 typedef struct {
     // your code here
+    int x, y;
+    int dice;
 } Hex;
 
 typedef struct {
-    int ax, ay;
-    int bx, by;
+    Hex h1;
+    Hex h2;
 } Edge;
 
 typedef struct {
     // your code here
+    Hex h1;
+    Hex h2;
+    Hex h3;
 } Intersection;
 
 typedef struct {
@@ -29,6 +34,7 @@ typedef struct {
     Edge green[MAX_EDGE_PER_COLOR];
     Edge orange[MAX_EDGE_PER_COLOR];
 } road_occupation;
+
 
 // -----------------------------------------------------------------------------
 // Helper print functions (already implemented for testing / debugging)
@@ -162,10 +168,28 @@ void penalty_7(char *inventory) {
     - resource_hexes: array of Hex
     - n: number of valid elements in that array
 */
+const int PROB[13] = {0, 0, 1, 2, 3, 4, 5, 0, 5, 4, 3, 2, 1};
+int get_dice(int x, int y, Hex hexes[], int n){
+    for(int i = 0; i<n; i++){
+        if(x==hexes[i].x && y==hexes[i].y)
+            return hexes[i].dice;
+    }
+    return 7;
+}
+int cal_prob(int d1, int d2, int d3){
+    int total = PROB[d1];
+    if(d2!=d1){
+        total +=PROB[d2];
+    }
+    if(d3!=d2 && d3!=d1){
+        total += PROB[d3];
+    }
+    return total;
+}
 void best_intersection(Hex resource_hexes[], int n) {
     // ----- Begin: Student Answer -----
     // students must implement this function
-
+    
     // ----- End: Student Answer -----
 }
 
@@ -197,7 +221,6 @@ int dice_probability_numerator(int dice) {
     // ----- Begin: Student Answer -----
     // return numerator over denominator 36
     // examples: 6 -> 5, 8 -> 5, 7 -> 0
-
     return 0;
     // ----- End: Student Answer -----
 }

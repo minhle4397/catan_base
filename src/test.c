@@ -2,7 +2,53 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#define MAX_EDGE_PER_COLOR 100
+#define EPSILON 1e-9
+typedef struct {
+    // your code here
+    int x, y;
+    int dice;
+} Hex;
 
+typedef struct {
+    Hex h1;
+    Hex h2;
+} Edge;
+
+typedef struct {
+    // your code here
+    Hex h1;
+    Hex h2;
+    Hex h3;
+} Intersection;
+
+typedef struct {
+    Edge red[MAX_EDGE_PER_COLOR];
+    Edge blue[MAX_EDGE_PER_COLOR];
+    Edge green[MAX_EDGE_PER_COLOR];
+    Edge orange[MAX_EDGE_PER_COLOR];
+} road_occupation;
+
+// -----------------------------------------------------------------------------
+// Helper print functions (already implemented for testing / debugging)
+// -----------------------------------------------------------------------------
+
+void printHex(Hex h) {
+    printf("(%d,%d,%d)", h.x, h.y, h.dice);
+}
+
+void printEdge(Edge e) {
+    printf("[(%d,%d),(%d,%d)]",
+           e.h1.x, e.h1.y,
+           e.h2.x, e.h2.y);
+}
+
+void printIntersection(Intersection in) {
+    printf("[(%d,%d),(%d,%d),(%d,%d)]",
+           in.h1.x, in.h1.y,
+           in.h2.x, in.h2.y,
+           in.h3.x, in.h3.y);
+}
 void action(char *action_sequence, char *inventory) {
     // ----- Begin: Student Answer -----
     int inv[256] = {0};
@@ -86,6 +132,12 @@ void penalty_7(char *inventory) {
         else printf("Ban can bo %d la tai nguyen. Siuuu\n", (sum/2)+1);
     }
     else printf("Ban an toan\n");
+
+    // ----- End: Student Answer -----
+}
+void best_intersection(Hex resource_hexes[], int n) {
+    // ----- Begin: Student Answer -----
+    // students must implement this function
 
     // ----- End: Student Answer -----
 }
