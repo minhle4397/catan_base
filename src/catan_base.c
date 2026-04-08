@@ -186,10 +186,51 @@ int cal_prob(int d1, int d2, int d3){
     }
     return total;
 }
+void swap_hex(Hex *a, Hex *b){
+    Hex temp = *a;
+    *a = *b;
+    *b = temp;
+}
+void sort_inter(Hex *h1, Hex *h2, Hex *h3){
+    if(h1->x>h2->x || (h1->x==h2->x && h1->y>h2->y)) swap_hex(h1,h2);
+    if(h2->x>h3->x || (h2->x==h3->x && h2->y>h3->y)) swap_hex(h2,h3);
+    if(h1->x>h3->x || (h1->x==h3->x && h1->y>h3->y)) swap_hex(h1,h3);
+}
 void best_intersection(Hex resource_hexes[], int n) {
     // ----- Begin: Student Answer -----
     // students must implement this function
-    
+    int max_prob = -1;
+    Intersection best_inter;
+    for(int i = 0; i<n; i++){
+        int is_odd = (resource_hexes[i].y%2==0)?0:1;
+        int dx[2][6] = {{-1,-1,0,1,0,-1},{-1,0,1,1,1,0}};
+        int dy[6] = {0,-1,-1,0,1,1};
+        Hex neighbours[6];
+        for(int j = 0; j<6; j++){
+            neighbours[j].x = resource_hexes[i].x + dx[is_odd][j];
+            neighbours[j].y = resource_hexes[i].y + dy[j];
+            neighbours[j].dice = get_dice(neighbours[j].x, neighbours[j].y,resource_hexes,n);
+        }
+        Intersection inter[6];
+        for(int k = 0; k<6; k++){
+            inter[k].h1 = resource_hexes[i];
+            inter[k].h2 = neighbours[k];
+            if(k<5)
+                inter[k].h3 = neighbours[k+1];
+            else inter[k].h3 = neighbours[0];
+        }
+        for(int m = 0; m<6; m++){
+            int cal = cal_prob(inter[m].h1.dice,inter[m].h2.dice,inter[m].h3.dice);
+            if(cal>max_prob){
+                max_prob = cal;
+                best_inter = inter[m];
+            }
+        }
+    }
+    sort_inter(&best_inter.h1, &best_inter.h2, &best_inter.h3);
+    printf("Giao diem tot nhat: [(%d,%d),(%d,%d),(%d,%d)] voi xac suat %d/36",
+    best_inter.h1.x,best_inter.h1.y,best_inter.h2.x,best_inter.h2.y,best_inter.h3.x,best_inter.h3.y,
+max_prob);
     // ----- End: Student Answer -----
 }
 
