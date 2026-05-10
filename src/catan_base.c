@@ -268,23 +268,119 @@ int dice_probability_numerator(int dice) {
 
 int same_hex(Hex a, Hex b) {
     // ----- Begin: Student Answer -----
-
+    if(a.x == b.x && a.y == b.y) return 1;
     return 0;
     // ----- End: Student Answer -----
 }
-
+int is_adjacency(Hex a, Hex b){
+    int is_odd = (a.y%2==0)?0:1;
+    int dx[2][6] = {{-1,-1,0,1,0,-1},{-1,0,1,1,1,0}};
+    int dy[6] = {0,-1,-1,0,1,1};
+    Hex n ;
+    for(int i = 0; i<6; i++){
+        n.x = a.x + dx[is_odd][i];
+        n.y = a.y + dy[i];
+        if((n.x == b.x) && (n.y == b.y)) return 1;
+    }
+    return 0;
+}
+int is_connected(Edge a, Edge b){
+    Hex comm, other1, other2;
+    int shared_hex = 0;
+    if(same_hex(a.h1,b.h1))
+        {comm = a.h1; other1 = a.h2; other2 = b.h2; shared_hex++;}
+    if(same_hex(a.h1, b.h2))
+        {comm = a.h1; other1 = a.h2; other2 = b.h1; shared_hex++;}
+    if(same_hex(a.h2, b.h1))
+        {comm = a.h2; other1 = a.h1; other2 = b.h2; shared_hex++;}
+    if(same_hex(a.h2, b.h2))
+        {comm = a.h2; other1 = a.h1; other2 = b.h1; shared_hex++;}
+    if(shared_hex!=1) return 0;
+    if(is_adjacency(other1, other2)) return 1;
+    return 0;
+}
 int same_edge(Edge a, Edge b) {
     // ----- Begin: Student Answer -----
-
     return 0;
     // ----- End: Student Answer -----
 }
 
 int is_empty_edge(Edge e) {
     // ----- Begin: Student Answer -----
-
+    if(e.h1.x == 0 && e.h1.y == 0 && e.h2.x == 0 && e.h2.y ==0) return 1;
     return 0;
     // ----- End: Student Answer -----
+}
+void dfs(Edge current_edge, Edge color_edge[], int visited[],
+     int current_len, int *max_len){
+    //depth-first-search
+    if(current_len > *max_len) *max_len = current_len;
+    for(int i = 0 ; i<100; i++){
+        if(!is_empty_edge(color_edge[i]) && visited[i]==0 
+        && is_connected(current_edge, color_edge[i]))
+            {
+                visited[i] = 1;
+                dfs(color_edge[i], color_edge, visited, current_len+1, max_len);
+                visited[i] = 0;
+            } 
+    }
+}
+const char* longest_road(road_occupation ro){
+    int global_max = 0;
+    const char *winner = "";
+    int color_max = 0;
+    //Consider red first
+    for(int i = 0; i<100; i++){
+        if(!is_empty_edge(ro.red[i])){
+            int visited[100] = {0};
+            visited[i] = 1;
+            dfs(ro.red[i],ro.red,visited,1, &color_max);
+        }
+    }
+    if(color_max>global_max) {
+        global_max = color_max;
+        winner = "Red";
+    }
+    //Blue
+    color_max = 0;
+    for(int i = 0; i<100; i++){
+        if(!is_empty_edge(ro.blue[i])){
+            int visited[100] = {0};
+            visited[i] = 1;
+            dfs(ro.blue[i], ro.blue, visited, 1, &color_max);
+        }
+    }
+    if(color_max>global_max){
+        global_max = color_max;
+        winner = "Blue";
+    }
+    //Green
+    color_max = 0;
+    for(int i = 0; i<100; i++){
+        if(!is_empty_edge(ro.green[i])){
+            int visited[100] = {0};
+            visited[i] = 1;
+            dfs(ro.green[i], ro.green, visited, 1, &color_max);
+        }
+    }
+    if(color_max>global_max){
+        global_max = color_max;
+        winner = "Green";
+    }
+    //Orange
+    color_max = 0;
+    for(int i = 0; i<100; i++){
+        if(!is_empty_edge(ro.orange[i])){
+            int visited[100] = {0};
+            visited[i] = 1;
+            dfs(ro.orange[i], ro.orange, visited, 1, &color_max);
+        }
+    }
+    if(color_max>global_max){
+        global_max = color_max;
+        winner = "Orange";
+    }
+    return winner;
 }
 
 // -----------------------------------------------------------------------------
